@@ -1,0 +1,77 @@
+# =============================================================
+# Kikoe - Wake Word Config: おやすみなさい (oyasuminasai)
+#
+# Best run: layer=32, steps=20k
+# Result:   FP=0.531/hr, Recall=0.683
+# Difficulty: Low (easiest of the three — 7-mora word, very distinct)
+# =============================================================
+
+# ── Wake word ─────────────────────────────────────────────────
+wake_word: "おやすみなさい"
+model_name: "oyasuminasai"
+
+# ── Dataset generation ────────────────────────────────────────
+n_samples_train: 5000
+n_samples_val: 1000
+
+adversarial_phrases:
+  - "おやすみ"           # partial - oyasumi
+  - "おやすみなさいませ"  # extended
+  - "おはようございます"  # ohayou gozaimasu
+  - "おやつ"             # oyatsu (snack)
+  - "おかえりなさい"      # okaerinasai
+  - "いただきます"        # itadakimasu
+  - "ごちそうさま"        # gochisousama
+  - "こんにちは"          # konnichiwa
+  - "こんばんは"          # konbanwa
+  - "さようなら"          # sayounara
+  - "ありがとう"          # arigatou
+  - "すみません"          # sumimasen
+  - "ただいま"            # tadaima
+  - "いってきます"        # ittekimasu
+  - "おめでとう"          # omedetou
+  - "お休み"             # oyasumi (kanji variant)
+  - "やすみ"             # yasumi
+  - "なさい"             # nasai (partial)
+  - "おやすみください"    # oyasumi kudasai
+  - "お元気ですか"        # ogenki desuka
+
+# ── Training (best config) ────────────────────────────────────
+# Note: layer=32 is optimal. layer=64+ dramatically increases FP.
+#       steps=20k is the sweet spot — 30k+ hurts FP with no Recall gain.
+steps: 20000
+layer_size: 32
+augmentation_rounds: 3
+max_negative_weight: 1500
+target_false_positives_per_hour: 10.0
+random_seed: 42
+
+# ── Inference ─────────────────────────────────────────────────
+threshold: 0.5
+save_audio: true
+save_dir: "captured_audio/oyasuminasai"
+
+# ── Voice recording ───────────────────────────────────────────
+record_dir: "./my_voice_samples/oyasuminasai"
+silence_threshold: 200
+record_seconds: 2.5
+pre_record_seconds: 0.3
+
+# ── Paths (adjust to your environment) ────────────────────────
+output_dir: "./my_custom_model"
+backup_dir: "./model_backups"
+
+background_audio_dirs:
+  - "./audioset_16k"
+  - "./fma"
+
+rir_dirs:
+  - "./mit_rirs"
+
+validation_features: "./validation_set_features.npy"
+acav_features: "./openwakeword_features_ACAV100M_2000_hrs_16bit.npy"
+
+# Update python_path to your conda env:
+# conda run -n kikoe which python
+python_path: "python"
+train_script: "./openWakeWord/openwakeword/train.py"

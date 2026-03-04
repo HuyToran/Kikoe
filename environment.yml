@@ -1,0 +1,20 @@
+name: kikoe
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - pip:
+    - torch
+    - torchaudio
+    - openwakeword
+    - melo-tts
+    - pyaudio
+    - scipy
+    - numpy
+    - tqdm
+    - pyyaml
+    - datasets
+    - aiohttp
+    - onnxruntime

@@ -205,3 +205,18 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Training data (large, downloaded via download_data.py)
+audioset_16k/
+fma/
+mit_rirs/
+*.npy
+openWakeWord/
+piper-sample-generator/
+
+# Generated during pipeline (local only)
+my_custom_model/
+model_backups/
+my_voice_samples/
+captured_audio/
+tmp_training_config.yaml

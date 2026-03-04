@@ -1,0 +1,81 @@
+# =============================================================
+# Kikoe - Wake Word Config: 寝てください (netekudasai)
+#
+# Best run: layer=32, max_neg=300, steps=20k, seed=42
+# Result:   FP=1.062/hr, Recall=0.697
+# Difficulty: Very low (passed in just 2 runs!)
+#
+# Key insight: There's a hard FP cliff between max_neg=200 (FP=5.0)
+# and max_neg=300 (FP=1.06). Stay at 300.
+# =============================================================
+
+# ── Wake word ─────────────────────────────────────────────────
+wake_word: "寝てください"
+model_name: "netekudasai"
+
+# ── Dataset generation ────────────────────────────────────────
+n_samples_train: 5000
+n_samples_val: 1000
+
+adversarial_phrases:
+  - "寝て"                  # partial - nete
+  - "ください"              # partial - kudasai (very common suffix)
+  - "寝てる"                # nete iru (progressive)
+  - "寝てた"                # nete ita (past)
+  - "寝てよ"                # nete yo (casual imperative)
+  - "見てください"          # mite kudasai (same ending structure)
+  - "来てください"          # kite kudasai
+  - "待ってください"        # matte kudasai
+  - "起きてください"        # okite kudasai (opposite: wake up)
+  - "立ってください"        # tatte kudasai
+  - "食べてください"        # tabete kudasai
+  - "してください"          # shite kudasai (very common)
+  - "行ってください"        # itte kudasai
+  - "止まってください"      # tomatte kudasai
+  - "座ってください"        # suwatte kudasai
+  - "寝る"                  # neru (sleep)
+  - "寝ます"                # nemasu (will sleep)
+  - "寝た"                  # neta (slept)
+  - "寝ろ"                  # nero (sleep! rough)
+
+# ── Training (best config) ────────────────────────────────────
+# Warning: max_neg is very sensitive here.
+#   max_neg=200 → FP=5.0/hr  (too many false positives)
+#   max_neg=300 → FP=1.06/hr (sweet spot)
+#   max_neg=150 → FP=5.2/hr  (even worse)
+steps: 20000
+layer_size: 32
+augmentation_rounds: 3
+max_negative_weight: 300
+target_false_positives_per_hour: 10.0
+random_seed: 42
+
+# ── Inference ─────────────────────────────────────────────────
+threshold: 0.5
+save_audio: true
+save_dir: "captured_audio/netekudasai"
+
+# ── Voice recording ───────────────────────────────────────────
+record_dir: "./my_voice_samples/netekudasai"
+silence_threshold: 200
+record_seconds: 2.5
+pre_record_seconds: 0.3
+
+# ── Paths (adjust to your environment) ────────────────────────
+output_dir: "./my_custom_model"
+backup_dir: "./model_backups"
+
+background_audio_dirs:
+  - "./audioset_16k"
+  - "./fma"
+
+rir_dirs:
+  - "./mit_rirs"
+
+validation_features: "./validation_set_features.npy"
+acav_features: "./openwakeword_features_ACAV100M_2000_hrs_16bit.npy"
+
+# Update python_path to your conda env:
+# conda run -n kikoe which python
+python_path: "python"
+train_script: "./openWakeWord/openwakeword/train.py"

@@ -1,0 +1,74 @@
+# =============================================================
+# Kikoe - Wake Word Config: ハナケア (hanakea)
+#
+# Best run: layer=256, max_neg=1350, steps=40k, seed=267
+# Result:   FP=1.239/hr, Recall=0.686
+# Difficulty: High (19 runs to reach target)
+# =============================================================
+
+# ── Wake word ─────────────────────────────────────────────────
+wake_word: "ハナケア"
+model_name: "hanakea"
+
+# ── Dataset generation ────────────────────────────────────────
+n_samples_train: 5000
+n_samples_val: 1000
+
+adversarial_phrases:
+  - "ハナ"             # partial - hana
+  - "ケア"             # partial - kea / care
+  - "ハナケ"           # partial - hanake
+  - "ハナケアー"       # extended
+  - "カナケア"         # similar sound
+  - "ハナゲア"         # similar sound
+  - "ハナケイ"         # similar ending
+  - "ハナビ"           # hanabi (fireworks)
+  - "ハナミ"           # hanami
+  - "ハナゲ"           # hanage
+  - "バナナ"           # banana — same rhythm
+  - "ケアマネ"         # care manager
+  - "ハワイ"           # hawaii
+  - "アケア"           # akea
+  - "タナカ"           # tanaka (common name)
+  - "はなける"         # hanakeru
+  - "ハナスカ"         # similar pattern
+  - "ナケア"           # nakea (partial)
+  - "カレア"           # karea (similar ending)
+
+# ── Training (best config) ────────────────────────────────────
+steps: 40000
+layer_size: 256
+augmentation_rounds: 3
+max_negative_weight: 1350
+target_false_positives_per_hour: 10.0
+random_seed: 267
+
+# ── Inference ─────────────────────────────────────────────────
+threshold: 0.5
+save_audio: true
+save_dir: "captured_audio/hanakea"
+
+# ── Voice recording ───────────────────────────────────────────
+record_dir: "./my_voice_samples/hanakea"
+silence_threshold: 200
+record_seconds: 2.5
+pre_record_seconds: 0.3
+
+# ── Paths (adjust to your environment) ────────────────────────
+output_dir: "./my_custom_model"
+backup_dir: "./model_backups"
+
+background_audio_dirs:
+  - "./audioset_16k"
+  - "./fma"
+
+rir_dirs:
+  - "./mit_rirs"
+
+validation_features: "./validation_set_features.npy"
+acav_features: "./openwakeword_features_ACAV100M_2000_hrs_16bit.npy"
+
+# Update python_path to your conda env:
+# conda run -n kikoe which python
+python_path: "python"
+train_script: "./openWakeWord/openwakeword/train.py"
