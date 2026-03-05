@@ -114,22 +114,8 @@ def download_features():
 # ── openWakeWord embedding models ──────────────────────────────────────────────
 
 def download_oww_models():
-    model_dir = "./openWakeWord/openwakeword/resources/models"
-    os.makedirs(model_dir, exist_ok=True)
-    base = "https://github.com/dscripka/openWakeWord/releases/download/v0.5.1"
-    models = [
-        "embedding_model.onnx",
-        "embedding_model.tflite",
-        "melspectrogram.onnx",
-        "melspectrogram.tflite",
-    ]
-    for name in models:
-        path = os.path.join(model_dir, name)
-        if not os.path.exists(path):
-            print(f"Downloading {name}...")
-            os.system(f"wget -q --show-progress -O {path} {base}/{name}")
-        else:
-            print(f"Already exists: {name}")
+    import openwakeword
+    openwakeword.utils.download_models()
 
 
 # ── main ───────────────────────────────────────────────────────────────────────

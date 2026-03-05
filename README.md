@@ -24,6 +24,9 @@ Three production-ready models are included in [`models/`](models/):
 # Install minimal requirements
 pip install openwakeword pyaudio numpy onnxruntime
 
+# Download base models (melspectrogram + embedding — required once after install)
+python -c "import openwakeword; openwakeword.utils.download_models()"
+
 # Interactive model selection
 python demo.py
 
