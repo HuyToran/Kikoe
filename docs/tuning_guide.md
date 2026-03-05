@@ -1,6 +1,6 @@
 # Hyperparameter Tuning Guide
 
-This guide documents hyperparameter insights from training all three bundled wake word models (ハナケア, おやすみなさい, 寝てください) across 34 total training runs.
+This guide documents hyperparameter insights from training all three bundled wake word models (ハナケア, おやすみなさい, 寝てください) across 37 total training runs.
 
 **Targets:** FP ≤ 2.0/hr AND Recall ≥ 0.65
 
@@ -60,15 +60,23 @@ At identical hyperparameters, different seeds produce meaningfully different res
 
 **Best config:** `layer=256, max_neg=1350, steps=40k, seed=267` → FP=1.239, Recall=0.686
 
-Key findings across 19 runs:
+Key findings across 21+ runs:
 - layer=32 and layer=64: FP controllable only at the cost of very low Recall (0.55-0.63).
 - layer=128: Recall improved to ~0.68 but required very low max_neg to hit FP target → unstable.
 - layer=256: First architecture to cleanly separate FP and Recall targets.
 - layer=512: Recall actually dropped vs layer=256 — overfit.
 - steps=35k vs 40k: 40k opened a Recall ceiling of ~0.72 (best run: Recall=0.717 at max_neg=1200, but FP=2.655). With max_neg=1350, FP came below 2.0 while keeping Recall at 0.686.
 
+**Adversarial phrases are NOT necessary for ハナケア (confirmed Run 21+):**
+- Run 19 (with 19 adversarial phrases): FP=1.239, Recall=0.686.
+- Run 21 (adversarial_phrases: []): FP=1.239, Recall=0.686 — identical results.
+- Conclusion: the ACAV100M background feature set (~2000hrs) provides sufficient negative signal. Adversarial phrases help for words with very common sub-phrases (e.g. 寝てください), but not for ハナケア which has no phonetically similar common words in the training negatives.
+
+**Previous adversarial phrases tested (for reference):**
+ハナ、ケア、ハナケ、ハナケアー、カナケア、ハナゲア、ハナケイ、ハナビ、ハナミ、ハナゲ、バナナ、ケアマネ、ハワイ、アケア、タナカ、はなける、ハナスカ、ナケア、カレア
+
 **Tuning sequence that works:**
-1. Start at layer=256, steps=35k, max_neg=900, seed=267.
+1. Start at layer=256, steps=35k, max_neg=900, seed=267, no adversarials.
 2. If FP > 2.0: raise max_neg by ~200.
 3. If Recall < 0.65: increase steps to 40k; compensate FP by raising max_neg.
 4. If stuck, try seed=42 at the same config.

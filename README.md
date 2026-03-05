@@ -10,13 +10,15 @@ A complete pipeline for training custom Japanese wake words on Mac (Apple Silico
 
 Three production-ready models are included in [`models/`](models/):
 
-| Wake Word | Romaji | FP/hr | Recall | Layer | Steps |
-|---|---|---|---|---|---|
-| ハナケア | hanakea | 1.24 | 0.686 | 256 | 40,000 |
-| おやすみなさい | oyasuminasai | 0.53 | 0.683 | 32 | 20,000 |
-| 寝てください | netekudasai | 1.06 | 0.697 | 32 | 20,000 |
+| Wake Word | Romaji | FP/hr | Recall | Layer | Steps | Adversarials |
+|---|---|---|---|---|---|---|
+| ハナケア | hanakea | 1.24 | 0.686 | 256 | 40,000 | none |
+| おやすみなさい | oyasuminasai | 0.53 | 0.683 | 32 | 20,000 | 20 phrases |
+| 寝てください | netekudasai | 1.06 | 0.697 | 32 | 20,000 | 19 phrases |
 
 > Target: **FP ≤ 2.0/hr** and **Recall ≥ 0.65**. All three models pass both criteria.
+>
+> **Note on ハナケア:** Confirmed across multiple runs that omitting adversarial phrases produces identical FP/Recall vs using 19 adversarial phrases. The bundled model and config reflect this finding.
 
 ### Quick demo (no training needed)
 

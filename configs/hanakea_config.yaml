@@ -3,7 +3,14 @@
 #
 # Best run: layer=256, max_neg=1350, steps=40k, seed=267
 # Result:   FP=1.239/hr, Recall=0.686
-# Difficulty: High (19 runs to reach target)
+# Difficulty: High (19+ runs to reach target)
+#
+# Note on adversarial_phrases:
+#   Confirmed (Run 21+) that removing adversarials yields identical
+#   FP/Recall vs using 19 adversarial phrases. The ACAV100M background
+#   feature set is sufficient to suppress FP for ハナケア without
+#   explicit adversarial negatives. adversarial_phrases: [] is the
+#   current recommended setting.
 # =============================================================
 
 # ── Wake word ─────────────────────────────────────────────────
@@ -14,26 +21,9 @@ model_name: "hanakea"
 n_samples_train: 5000
 n_samples_val: 1000
 
-adversarial_phrases:
-  - "ハナ"             # partial - hana
-  - "ケア"             # partial - kea / care
-  - "ハナケ"           # partial - hanake
-  - "ハナケアー"       # extended
-  - "カナケア"         # similar sound
-  - "ハナゲア"         # similar sound
-  - "ハナケイ"         # similar ending
-  - "ハナビ"           # hanabi (fireworks)
-  - "ハナミ"           # hanami
-  - "ハナゲ"           # hanage
-  - "バナナ"           # banana — same rhythm
-  - "ケアマネ"         # care manager
-  - "ハワイ"           # hawaii
-  - "アケア"           # akea
-  - "タナカ"           # tanaka (common name)
-  - "はなける"         # hanakeru
-  - "ハナスカ"         # similar pattern
-  - "ナケア"           # nakea (partial)
-  - "カレア"           # karea (similar ending)
+# adversarial_phrases intentionally empty — see note above.
+# For reference, the 19 phrases tested previously are in docs/tuning_guide.md.
+adversarial_phrases: []
 
 # ── Training (best config) ────────────────────────────────────
 steps: 40000
